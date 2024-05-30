@@ -49,7 +49,6 @@ import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.chart.ui.UIUtils;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -57,7 +56,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 /**
  * A simple demonstration application showing how to create a bar chart.
  */
-public class BarChartDemo1 extends ApplicationFrame {
+public class BarChartDemo1 extends Frame {
 
     private static final long serialVersionUID = 1L;
 
