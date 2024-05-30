@@ -32,13 +32,16 @@
 
 package org.jfree.chart.demo;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
+//import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.DateAxis;
@@ -58,9 +61,11 @@ import org.jfree.data.xy.XYDataset;
  * part, default settings are used, except that the renderer is modified to 
  * show filled shapes (as well as lines) at each data point.
  */
-public class TimeSeriesChartDemo1 extends ApplicationFrame {
+public class TimeSeriesChartDemo1 extends Frame {
 
     private static final long serialVersionUID = 1L;
+
+    private JFreeChart chart;
 
     /**
      * A demonstration application showing how to create a simple time series
@@ -70,10 +75,32 @@ public class TimeSeriesChartDemo1 extends ApplicationFrame {
      */
     public TimeSeriesChartDemo1(String title) {
         super(title);
-        ChartPanel chartPanel = (ChartPanel) createDemoPanel();
-        chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
-        setContentPane(chartPanel);
+        XYDataset dataset = createDataset();
+        chart = createChart(dataset);
+
+        // Create a Canvas to draw the chart on
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(new Dimension(500, 270));
+        add(canvas, BorderLayout.CENTER);
     }
+
 
     /**
      * Creates a chart.
@@ -183,13 +210,13 @@ public class TimeSeriesChartDemo1 extends ApplicationFrame {
      *
      * @return A panel.
      */
-    public static JPanel createDemoPanel() {
-        JFreeChart chart = createChart(createDataset());
-        ChartPanel panel = new ChartPanel(chart, false);
-        panel.setFillZoomRectangle(true);
-        panel.setMouseWheelEnabled(true);
-        return panel;
-    }
+//    public static JPanel createDemoPanel() {
+//        JFreeChart chart = createChart(createDataset());
+//        ChartPanel panel = new ChartPanel(chart, false);
+//        panel.setFillZoomRectangle(true);
+//        panel.setMouseWheelEnabled(true);
+//        return panel;
+//    }
 
     /**
      * Starting point for the demonstration application.

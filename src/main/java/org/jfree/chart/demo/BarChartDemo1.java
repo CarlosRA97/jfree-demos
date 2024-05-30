@@ -33,11 +33,15 @@
 
 package org.jfree.chart.demo;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Rectangle2D;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
+//import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.NumberAxis;
@@ -57,6 +61,8 @@ public class BarChartDemo1 extends ApplicationFrame {
 
     private static final long serialVersionUID = 1L;
 
+    private JFreeChart chart;
+
     /**
      * Creates a new demo instance.
      *
@@ -65,12 +71,26 @@ public class BarChartDemo1 extends ApplicationFrame {
     public BarChartDemo1(String title) {
         super(title);
         CategoryDataset dataset = createDataset();
-        JFreeChart chart = createChart(dataset);
-        ChartPanel chartPanel = new ChartPanel(chart, false);
-        chartPanel.setFillZoomRectangle(true);
-        chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(500, 270));
-        setContentPane(chartPanel);
+        chart = createChart(dataset);
+
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        canvas.setPreferredSize(new Dimension(500, 270));
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

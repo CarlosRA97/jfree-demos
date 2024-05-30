@@ -32,6 +32,12 @@
 
 package org.jfree.chart.demo;
 
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.text.SimpleDateFormat;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,7 +49,6 @@ import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.plot.PiePlot;
@@ -60,9 +65,11 @@ import org.jfree.data.general.PieDataset;
  * A simple demonstration application showing how to create a pie chart using
  * data from a {@link DefaultPieDataset}.
  */
-public class PieChartDemo1 extends ApplicationFrame {
+public class PieChartDemo1 extends Frame {
 
     private static final long serialVersionUID = 1L;
+
+    private JFreeChart chart;
 
     static {
         // set a theme using the new shadow generator feature available in
@@ -78,7 +85,32 @@ public class PieChartDemo1 extends ApplicationFrame {
      */
     public PieChartDemo1(String title) {
         super(title);
-        setContentPane(createDemoPanel());
+        PieDataset dataset = createDataset();
+        chart = createChart(dataset);
+        chart.setPadding(new RectangleInsets(4, 8, 2, 2));
+
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add a window closing event listener
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set the preferred size of the canvas
+        canvas.setPreferredSize(new Dimension(600, 300));
+
+        // Add the canvas to the center of the frame
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**
@@ -182,14 +214,14 @@ public class PieChartDemo1 extends ApplicationFrame {
      *
      * @return A panel.
      */
-    public static JPanel createDemoPanel() {
-        JFreeChart chart = createChart(createDataset());
-        chart.setPadding(new RectangleInsets(4, 8, 2, 2));
-        ChartPanel panel = new ChartPanel(chart, false);
-        panel.setMouseWheelEnabled(true);
-        panel.setPreferredSize(new Dimension(600, 300));
-        return panel;
-    }
+//    public static JPanel createDemoPanel() {
+//        JFreeChart chart = createChart(createDataset());
+//        chart.setPadding(new RectangleInsets(4, 8, 2, 2));
+//        ChartPanel panel = new ChartPanel(chart, false);
+//        panel.setMouseWheelEnabled(true);
+//        panel.setPreferredSize(new Dimension(600, 300));
+//        return panel;
+//    }
 
     /**
      * Starting point for the demonstration application.

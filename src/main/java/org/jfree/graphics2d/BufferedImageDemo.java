@@ -60,7 +60,7 @@ public class BufferedImageDemo {
         BufferedImage image = new BufferedImage(600, 400, 
                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = image.createGraphics();
-        ImageIcon icon = new ImageIcon(BufferedImageDemo.class.getResource("jfree_chart_1.jpg"));
+        ImageIcon icon = new ImageIcon("src/main/resources/org/jfree/graphics2d/jfree_chart_1.jpg");
         g2.rotate(Math.PI / 12);
         g2.setStroke(new BasicStroke(2.0f));
         g2.setPaint(Color.WHITE);
