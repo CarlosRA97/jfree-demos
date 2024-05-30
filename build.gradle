@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    classpath_dir = file("/usr/local/classpath/share/classpath/") // Ajustar al path real de GNU Classpath
+    classpath_zip = file("${classpath_dir}/glibj.zip")
+    classpath_bootclasspath = files(classpath_zip)
+}
+
+java {
+    sourceCompatibility JavaVersion.VERSION_1_6
+    targetCompatibility JavaVersion.VERSION_1_6
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.bootstrapClasspath = project.classpath_bootclasspath
+}
+
+dependencies {
+    implementation 'com.object-refinery:orsoncharts:1.7'
+    implementation 'org.jfree:jfreesvg:3.3'
+    implementation 'com.orsonpdf:orsonpdf:1.7'
+
+    implementation files("../jfreechart/build/libs/jfreechart.jar")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    from sourceSets.main.output
+    from sourceSets.test.output
+//    manifest {
+//        from 'build/resources/main/META-INF/MANIFEST.MF'
+//    }
+}
+
+task createFatJar(type: Jar) {
+    //baseName = project.name + '-all'  // Customize base name if needed
+//    manifest {
+//        from 'build/resources/main/META-INF/MANIFEST.MF'
+//    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from sourceSets.main.output
+    from sourceSets.test.output
+    from configurations.runtimeClasspath.collect { zipTree(it) }
+}
