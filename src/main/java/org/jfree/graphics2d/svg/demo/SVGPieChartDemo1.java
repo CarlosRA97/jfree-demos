@@ -74,7 +74,7 @@ public class SVGPieChartDemo1 {
      *
      * @return A sample dataset.
      */
-    private static PieDataset createDataset() {
+    public static PieDataset createDataset() {
         DefaultPieDataset dataset = new DefaultPieDataset();
         dataset.setValue("Samsung", new Double(27.8));
         dataset.setValue("Others", new Double(55.3));
@@ -90,7 +90,7 @@ public class SVGPieChartDemo1 {
      *
      * @return A chart.
      */
-    private static JFreeChart createChart(PieDataset dataset) {
+    public static JFreeChart createChart(PieDataset dataset) {
 
         JFreeChart chart = ChartFactory.createPieChart(
             "Smart Phones Manufactured / Q3 2011",  // chart title

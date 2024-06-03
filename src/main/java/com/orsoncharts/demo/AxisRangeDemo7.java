@@ -36,10 +36,10 @@
 
 package com.orsoncharts.demo;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JLabel;
 import javax.swing.JSlider;
@@ -66,7 +66,7 @@ import com.orsoncharts.plot.XYZPlot;
  * A demonstration of a scatter plot in 3D.
  */
 @SuppressWarnings("serial")
-public class AxisRangeDemo7 extends JFrame {
+public class AxisRangeDemo7 extends Frame {
 
     static class CustomDemoPanel extends DemoPanel implements ChangeListener {
         
@@ -173,6 +173,8 @@ public class AxisRangeDemo7 extends JFrame {
         }
     }
 
+    Chart3D chart;
+
     /**
      * Creates a new test app.
      *
@@ -180,8 +182,32 @@ public class AxisRangeDemo7 extends JFrame {
      */
     public AxisRangeDemo7(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        XYZDataset dataset = createDataset();
+        chart = Chart3DFactory.createXYZLineChart("AxisRangeDemo7",
+            "Chart created with Orson Charts", dataset, "X", "Y", "Z");
+        XYZPlot plot = (XYZPlot) chart.getPlot();
+        plot.setDimensions(new Dimension3D(10.0, 4.0, 10.0));
+        chart.setViewPoint(ViewPoint3D.createAboveLeftViewPoint(40));
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

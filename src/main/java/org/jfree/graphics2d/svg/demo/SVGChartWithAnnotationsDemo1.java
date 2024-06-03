@@ -77,7 +77,7 @@ public class SVGChartWithAnnotationsDemo1 {
      *
      * @return A sample chart.
      */
-    private static JFreeChart createChart(XYDataset dataset) {
+    public static JFreeChart createChart(XYDataset dataset) {
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "XYDrawableAnnotationDemo1",
                 null, "$ million", dataset);
@@ -123,7 +123,7 @@ public class SVGChartWithAnnotationsDemo1 {
      *
      * @return A dataset.
      */
-    private static XYDataset createDataset() {
+    public static XYDataset createDataset() {
         TimeSeries series1 = new TimeSeries("Division A");
         series1.add(new Year(2005), 1520);
         series1.add(new Year(2006), 1132);

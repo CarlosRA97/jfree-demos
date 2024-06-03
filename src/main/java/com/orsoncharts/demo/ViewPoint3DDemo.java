@@ -38,8 +38,11 @@ package com.orsoncharts.demo;
 
 import com.orsoncharts.demo.OrsonChartsDemo;
 import com.orsoncharts.demo.ExitOnClose;
-import java.awt.BorderLayout;
-import java.awt.Color;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,12 +62,13 @@ import com.orsoncharts.graphics3d.swing.Panel3D;
  * A demo of the viewing point.
  */
 @SuppressWarnings("serial")
-public class ViewPoint3DDemo extends JFrame {
+public class ViewPoint3DDemo extends Frame {
 
     List<Point3D> xlist;
     List<Point3D> ylist;
     List<Point3D> zlist;
     Panel3D panel3D;
+    DefaultDrawable3D chart;
     
     /**
      * Creates a new test app.
@@ -73,8 +77,35 @@ public class ViewPoint3DDemo extends JFrame {
      */
     public ViewPoint3DDemo(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        World world = new World();
+        world.add(Object3D.createCube(1.0, 0, 0, 0, Color.BLUE));
+        ViewPoint3D vp = new ViewPoint3D(new Point3D(10, 10, 10), 0);
+        xlist = addRing(true, world, new Point3D(0, 5, 0), Point3D.UNIT_X, Color.GREEN);
+        ylist = addRing(true, world, new Point3D(0, 0, 5), Point3D.UNIT_Y, Color.ORANGE);
+        zlist = addRing(true, world, new Point3D(0, 5, 0), Point3D.UNIT_Z, Color.RED);
+        final DefaultDrawable3D chart = new DefaultDrawable3D(world);
+
+        // Create a Canvas to draw the chart on
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

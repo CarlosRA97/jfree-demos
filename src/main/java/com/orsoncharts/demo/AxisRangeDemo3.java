@@ -39,10 +39,11 @@ package com.orsoncharts.demo;
 import com.orsoncharts.demo.OrsonChartsDemo;
 import com.orsoncharts.demo.DemoPanel;
 import com.orsoncharts.demo.ExitOnClose;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.LayoutManager;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JLabel;
 import javax.swing.JSlider;
@@ -70,7 +71,7 @@ import com.orsoncharts.renderer.category.LineRenderer3D;
  * A test for changes to the value axis range on a bar chart.
  */
 @SuppressWarnings("serial")
-public class AxisRangeDemo3 extends JFrame {
+public class AxisRangeDemo3 extends Frame {
 
     static class CustomDemoPanel extends DemoPanel implements ChangeListener {
 
@@ -106,6 +107,8 @@ public class AxisRangeDemo3 extends JFrame {
             }
         }
     }
+
+    Chart3D chart;
     
     /**
      * Creates a new test app.
@@ -114,8 +117,40 @@ public class AxisRangeDemo3 extends JFrame {
      */
     public AxisRangeDemo3(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        CategoryDataset3D dataset = createDataset();
+        chart = Chart3DFactory.createLineChart("AxisRangeDemo3",
+            "A test for axis range changes on a line chart", dataset, "Row",
+            "Category", "Value");
+        chart.setChartBoxColor(new Color(255, 255, 255, 128));
+        chart.setViewPoint(ViewPoint3D.createAboveLeftViewPoint(40));
+        CategoryPlot3D plot = (CategoryPlot3D) chart.getPlot();
+        plot.getValueAxis().setRange(-500, 500);
+        plot.getRowAxis().setVisible(false);
+        LineRenderer3D renderer = (LineRenderer3D) plot.getRenderer();
+        renderer.setItemLabelPositioning(ItemLabelPositioning.FRONT_AND_BACK);
+        renderer.setItemLabelOffsets(new Offset3D(0.0, 0.0, 1.2));
+        renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator(
+            StandardCategoryItemLabelGenerator.VALUE_TEMPLATE));
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

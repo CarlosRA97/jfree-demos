@@ -36,7 +36,10 @@
 
 package com.orsoncharts.demo;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -57,7 +60,9 @@ import com.orsoncharts.util.Orientation;
  * A demo showing a simple pie chart in 3D.
  */
 @SuppressWarnings("serial")
-public class PieChart3DDemo1 extends JFrame {
+public class PieChart3DDemo1 extends Frame {
+
+    Chart3D chart;
 
     /**
      * Creates a new test app.
@@ -66,8 +71,28 @@ public class PieChart3DDemo1 extends JFrame {
      */
     public PieChart3DDemo1(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        PieDataset3D<String> dataset = createDataset();
+        chart = createChart(dataset);
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

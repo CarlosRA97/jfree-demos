@@ -63,7 +63,7 @@ public class SVGBarChartDemo1 {
      *
      * @return The dataset.
      */
-    private static CategoryDataset createDataset() {
+    public static CategoryDataset createDataset() {
         DefaultStatisticalCategoryDataset dataset
             = new DefaultStatisticalCategoryDataset();
         dataset.add(10.0, 2.4, "Row 1", "Column 1");
@@ -84,7 +84,7 @@ public class SVGBarChartDemo1 {
      *
      * @return The chart.
      */
-    private static JFreeChart createChart(CategoryDataset dataset) {
+    public static JFreeChart createChart(CategoryDataset dataset) {
 
         JFreeChart chart = ChartFactory.createLineChart(
             "Statistical Bar Chart Demo 1", "Type", "Value", dataset);

@@ -39,7 +39,11 @@ package com.orsoncharts.demo;
 import com.orsoncharts.demo.OrsonChartsDemo;
 import com.orsoncharts.demo.DemoPanel;
 import com.orsoncharts.demo.ExitOnClose;
-import java.awt.BorderLayout;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -54,10 +58,6 @@ import com.orsoncharts.graphics3d.ViewPoint3D;
 import com.orsoncharts.graphics3d.swing.DisplayPanel3D;
 import com.orsoncharts.plot.XYZPlot;
 
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
-
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -67,7 +67,7 @@ import javax.swing.event.ChangeListener;
  * A demonstration of a scatter plot in 3D.
  */
 @SuppressWarnings("serial")
-public class AxisRangeDemo6 extends JFrame {
+public class AxisRangeDemo6 extends Frame {
 
     static class CustomDemoPanel extends DemoPanel implements ChangeListener {
         
@@ -162,6 +162,8 @@ public class AxisRangeDemo6 extends JFrame {
         }
     }
 
+    Chart3D chart;
+
     /**
      * Creates a new test app.
      *
@@ -169,8 +171,40 @@ public class AxisRangeDemo6 extends JFrame {
      */
     public AxisRangeDemo6(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        Function3D function = new Function3D() {
+            @Override
+            public double getValue(double x, double z) {
+                return Math.cos(x) * Math.sin(z);
+            }
+        };
+
+        chart = Chart3DFactory.createSurfaceChart("AxisRangeDemo6",
+            "Chart created with Orson Charts", function, "X", "Y", "Z");
+        XYZPlot plot = (XYZPlot) chart.getPlot();
+        plot.setDimensions(new Dimension3D(10.0, 4.0, 10.0));
+        plot.getXAxis().setRange(-5, 5);
+        plot.getZAxis().setRange(-5, 5);
+        chart.setViewPoint(ViewPoint3D.createAboveLeftViewPoint(40));
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

@@ -36,9 +36,10 @@
 
 package com.orsoncharts.demo;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import com.orsoncharts.Chart3DPanel;
 import com.orsoncharts.Chart3D;
@@ -47,12 +48,15 @@ import com.orsoncharts.data.category.CategoryDataset3D;
 import com.orsoncharts.graphics3d.swing.DisplayPanel3D;
 import com.orsoncharts.plot.CategoryPlot3D;
 import com.orsoncharts.renderer.category.AreaRenderer3D;
+import org.jfree.chart.JFreeChart;
 
 /**
  * A demo of a 3D area chart in Swing.
  */
 @SuppressWarnings("serial")
-public class AreaChart3DDemo1 extends JFrame {
+public class AreaChart3DDemo1 extends Frame {
+
+    private Chart3D chart;
 
     /**
      * Creates a new test app.
@@ -61,8 +65,30 @@ public class AreaChart3DDemo1 extends JFrame {
      */
     public AreaChart3DDemo1(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        CategoryDataset3D dataset = SampleData.createCompanyRevenueDataset();
+        chart = createChart(dataset);
+
+        // Create a Canvas to draw the chart on
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

@@ -36,8 +36,10 @@
 
 package com.orsoncharts.demo;
 
-import java.awt.Color;
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import com.orsoncharts.Chart3DPanel;
@@ -56,7 +58,7 @@ import com.orsoncharts.plot.XYZPlot;
  * A demo of a 3D line chart.
  */
 @SuppressWarnings("serial")
-public class XYZLineChart3DDemo1 extends JFrame {
+public class XYZLineChart3DDemo1 extends Frame {
 
     /**
      * Creates a new test app.
@@ -65,8 +67,28 @@ public class XYZLineChart3DDemo1 extends JFrame {
      */
     public XYZLineChart3DDemo1(String title) {
         super(title);
-        addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        XYZDataset dataset = createDataset();
+        final Chart3D chart = createChart(dataset);
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        add(canvas, BorderLayout.CENTER);
     }
 
     /**

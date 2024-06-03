@@ -68,7 +68,7 @@ public class SVGTimeSeriesChartDemo1 {
      *
      * @return A chart.
      */
-    private static JFreeChart createChart(XYDataset dataset) {
+    public static JFreeChart createChart(XYDataset dataset) {
 
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
             "International Coffee Organisation : Coffee Prices",
@@ -122,7 +122,7 @@ public class SVGTimeSeriesChartDemo1 {
      *
      * @return the dataset.
      */
-    private static XYDataset createDataset() {
+    public static XYDataset createDataset() {
 
         TimeSeries s1 = new TimeSeries("Indicator Price");
         s1.add(new Month(1, 2010), 126.80);
