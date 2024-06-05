@@ -36,13 +36,16 @@
 
 package com.orsoncharts.demo;
 
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -67,7 +70,7 @@ import com.orsoncharts.util.Orientation;
  * A demonstration of a scatter plot in 3D.
  */
 @SuppressWarnings("serial")
-public class ScatterPlot3DDemo3 extends JFrame {
+public class ScatterPlot3DDemo3 extends Frame {
 
     /**
      * Creates a new test app.
@@ -76,8 +79,62 @@ public class ScatterPlot3DDemo3 extends JFrame {
      */
     public ScatterPlot3DDemo3(String title) {
         super(title);
+        // Add an event listener to close the window
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+
+
         addWindowListener(new ExitOnClose());
-        getContentPane().add(createDemoPanel());
+        add(createDemoPanelAWT());
+    }
+
+    private static String[] getLabelsForCombination(int i) {
+        List<List<String>> labels = new ArrayList<List<String>>();
+        labels.add(Arrays.asList("Sepal Length", "Sepal Width", "Petal Length"));
+        labels.add(Arrays.asList("Sepal Length", "Sepal Width", "Petal Width"));
+        labels.add(Arrays.asList("Sepal Length", "Petal Width", "Petal Length"));
+        labels.add(Arrays.asList("Sepal Width", "Petal Width", "Petal Length"));
+
+        String[] result = new String[3];
+        labels.get(i).toArray(result);
+        return result;
+    }
+
+    public static Panel createDemoPanelAWT() {
+        GridLayout layout = new GridLayout(2, 2);
+        Panel content = new Panel(layout);
+
+        content.setPreferredSize(new Dimension(400, 400));
+
+        XYZDataset[] datasets = createDatasets();
+        for (int i = 0; i < datasets.length; i++) {
+            String[] labels = getLabelsForCombination(i);
+            Chart3D chart = createChart("Iris Dataset : Combination " + (i + 1), datasets[i], labels[0], labels[1], labels[2]);
+            Canvas chartPanel = createChartPanel(chart); // Replace with AWT or Swing implementation
+            chartPanel.setPreferredSize(new Dimension(10, 10));
+            content.add(chartPanel, BorderLayout.CENTER);
+        }
+
+        return content;
+    }
+
+    private static Canvas createChartPanel(final Chart3D chart) {
+        Canvas canvas = new Canvas() {
+            @Override
+            public void paint(Graphics g) {
+                super.paint(g);
+                Rectangle2D chartArea = new Rectangle2D.Double(0, 0, getWidth(), getHeight());
+                chart.draw((Graphics2D) g, chartArea);
+            }
+        };
+        // Set preferred size of the canvas
+        canvas.setPreferredSize(OrsonChartsDemo.DEFAULT_CONTENT_SIZE);
+        return canvas;
     }
 
     /**
