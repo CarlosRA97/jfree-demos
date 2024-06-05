@@ -118,7 +118,7 @@ public class XYZBarChart3DDemo1 extends Frame {
      * 
      * @return An XYZ-bar chart. 
      */
-    private static Chart3D createChart(XYZDataset dataset) {
+    public static Chart3D createChart(XYZDataset dataset) {
         Chart3D chart = Chart3DFactory.createXYZBarChart("XYZBarChart3DDemo1", 
                 "Chart created with Orson Charts", dataset, "X", "Value", "Z");
         chart.setViewPoint(ViewPoint3D.createAboveRightViewPoint(40));
@@ -132,7 +132,7 @@ public class XYZBarChart3DDemo1 extends Frame {
      * 
      * @return A sample dataset.
      */
-    private static XYZDataset<String> createDataset() {
+    public static XYZDataset<String> createDataset() {
         XYZSeries<String> series1 = new XYZSeries<String>("Series 1");
         series1.add(1.0, 5.0, 1.0);
         XYZSeries<String> series2 = new XYZSeries<String>("Series 2");

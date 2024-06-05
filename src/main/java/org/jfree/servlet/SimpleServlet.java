@@ -14,6 +14,7 @@ public class SimpleServlet extends HttpServlet {
     PrintWriter out = response.getWriter();
     out.println("<html><body>");
     out.println("<h1><a href='/jfree-demos/svgchart'>2D Charts</a></h1>");
+    out.println("<h1><a href='/jfree-demos/orson'>3D Charts</a></h1>");
     out.println("</body></html>");
   }
 }

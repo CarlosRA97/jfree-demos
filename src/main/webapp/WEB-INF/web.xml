@@ -14,6 +14,11 @@
         <servlet-class>org.jfree.servlet.SVGChartServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>OrsonServlet</servlet-name>
+        <servlet-class>org.jfree.servlet.OrsonServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>SimpleServlet</servlet-name>
         <url-pattern>/</url-pattern>
@@ -22,5 +27,10 @@
     <servlet-mapping>
         <servlet-name>SVGChartServlet</servlet-name>
         <url-pattern>/svgchart</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>OrsonServlet</servlet-name>
+        <url-pattern>/orson</url-pattern>
     </servlet-mapping>
 </web-app>
